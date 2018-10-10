@@ -10,4 +10,4 @@ Our project will use machine learning to predict world series winners.
 ## Data Sources 
 Sean Lahman's Baseball database - located [here](http://www.seanlahman.com/baseball-archive/statistics/).
 
-![baseball](resources/baseball.png)
+[![baseball](resources/baseball.png)](http://www.seanlahman.com/baseball-archive/statistics/)

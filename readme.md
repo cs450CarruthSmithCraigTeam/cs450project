@@ -1,5 +1,6 @@
 # CS 450 Project - World Series Champ Predictor
 This project is for our CS 450 group project.  Our group members are:
+* [Shawn Lilly](https://github.com/ShawnLilly)
 * [Levan Smith](https://github.com/levictorsmith)
 * [David Carruth](https://github.com/dcarruth)
 * [Daniel Craig](https://github.com/danielmartincraig)

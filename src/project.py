@@ -1,6 +1,9 @@
 #Here is the source file for our project. Do what you want with it and be sure to comment the work you do with your name.
 import math as m
 
+def main():
+    return 0
+
 class WorldSeries:
     def __init__(self, data = []):
         self.data = data
@@ -35,10 +38,11 @@ class WorldSeries:
                     count += 1
                 while (temp > 0):    
                     sumOfWinPercentage += year[resultsPerTrial.index(min(resultsPerTrial))][2]
+                    year[resultsPerTrial.index(min(resultsPerTrial))] = m.inf
                     temp -= 1
             resultsOfKNN.append(sumOfWinPercentage / count)
         # At this point, resultsOfKNN should have a result for every team based on the last 40 years.
         # This is where Shawn will take over to predict the
         ###############################################################
-                return 0
+        return 0
         

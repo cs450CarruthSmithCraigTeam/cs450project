@@ -1,0 +1,11 @@
+language: generic
+deploy:
+- provider: s3
+  access_key_id: $baseball_project_access_key_id
+  secret_access_key: $baseball_project_secret_key
+  bucket: lilly-carruth-smith-craig-baseball-project
+  local-dir: page
+  region: us-east-1
+  on:
+    repo: cs450LillyCarruthSmithCraigTeam/cs450project
+

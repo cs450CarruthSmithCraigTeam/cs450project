@@ -1,5 +1,8 @@
 # CS 450 Project - World Series Champ Predictor
 
+# Link
+The project is live here: https://s3.amazonaws.com/lilly-carruth-smith-craig-baseball-project/home.html
+
 [![Build Status](https://travis-ci.com/cs450LillyCarruthSmithCraigTeam/cs450project.svg?branch=master)](https://travis-ci.com/cs450LillyCarruthSmithCraigTeam/cs450project)
 
 This project is for our CS 450 group project.  Our group members are:

@@ -2,10 +2,12 @@ body {
     background-image: url("baseball.png");
 }
 
-div {
-    color: white
-    -webkit-box-shadow: 0px 0px 5px 10px #fff;
-    -moz-box-shadow: 0px 0px 5px 10px #fff;
-    box-shadow: 0px 0px 5px 10px #fff; 
+table {
+    margin: auto;
+    width: 500px;
+    background-color: white;
+    -webkit-box-shadow: 0px 0px 10px 300px #fff;
+    -moz-box-shadow: 0px 0px 10px 300px #fff;
+    box-shadow: 0px 0px 10px 300px #fff; 
 }
 

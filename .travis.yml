@@ -17,7 +17,7 @@ deploy:
   function_name: "baseballProjectDev"
   zip: projectSrc.zip
   region: "us-east-1"
-  role: "arn:aws:iam::523059797638:role/service-role/baseballProjectRole"
+  role: "arn:aws:iam::523059797638:role/service-role/baseballProjectDevRole"
   runtime: "python3.6"
   module_name: "project"
   handler_name: "lambda_handler"

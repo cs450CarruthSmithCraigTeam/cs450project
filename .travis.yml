@@ -21,6 +21,9 @@ deploy:
   runtime: "python3.6"
   module_name: "project"
   handler_name: "lambda_handler"
+  on:
+    branch: dev
+    repo: cs450LillyCarruthSmithCraigTeam/cs450project
 - provider: s3
   access_key_id: $baseball_project_access_key_id
   secret_access_key: $baseball_project_secret_key

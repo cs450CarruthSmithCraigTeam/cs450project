@@ -48,5 +48,8 @@ def lambda_handler(event, context):
     print("Successfully hit the lambda handler")
     return {
         'statusCode': 200,
+        'headers': { 
+            "Access-Control-Allow-Origin": "*" 
+        },
         'body': json.dumps('Hello from Lambda!')
     }

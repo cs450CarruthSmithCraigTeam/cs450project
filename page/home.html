@@ -6,7 +6,6 @@
     <title>Baseball Champ Predictor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
 
     <script>
         // This function's code is taken from https://stackoverflow.com/a/46904923
@@ -19,7 +18,7 @@
                     document.getElementById("myDiv").innerHTML = "The lambda needs more work...";
                 }
             };
-            xhttp.open("GET", "https://7ssek251ne.execute-api.us-east-1.amazonaws.com/dev/baseballProjectDev", true);
+            xhttp.open("GET", "https://rh6zjiht05.execute-api.us-east-1.amazonaws.com/default/baseballProjectDev", true);
             xhttp.send();
     
         }

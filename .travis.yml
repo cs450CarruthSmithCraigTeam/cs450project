@@ -1,5 +1,6 @@
 language: generic
-
+before_deploy:
+- zip -j projectSrc.zip src/project.py 
 deploy:
 - provider: s3
   access_key_id: $baseball_project_access_key_id
@@ -7,6 +8,19 @@ deploy:
   bucket: lilly-carruth-smith-craig-baseball-project-dev
   local-dir: page
   region: us-east-1
+  on:
+    branch: dev
+    repo: cs450LillyCarruthSmithCraigTeam/cs450project
+- provider: lambda
+  access_key_id: $baseball_project_access_key_id
+  secret_access_key: $baseball_project_secret_key
+  function_name: "baseballProjectDev"
+  zip: projectSrc.zip
+  region: "us-east-1"
+  role: "arn:aws:iam::523059797638:role/service-role/baseballProjectDevRole"
+  runtime: "python3.6"
+  module_name: "project"
+  handler_name: "lambda_handler"
   on:
     branch: dev
     repo: cs450LillyCarruthSmithCraigTeam/cs450project
@@ -19,4 +33,16 @@ deploy:
   on:
     branch: master
     repo: cs450LillyCarruthSmithCraigTeam/cs450project
-
+- provider: lambda
+  access_key_id: $baseball_project_access_key_id
+  secret_access_key: $baseball_project_secret_key
+  function_name: "baseballProject"
+  zip: projectSrc.zip
+  region: "us-east-1"
+  role: "arn:aws:iam::523059797638:role/service-role/baseballProjectRole"
+  runtime: "python3.6"
+  module_name: "project"
+  handler_name: "lambda_handler"
+  on:
+    branch: master
+    repo: cs450LillyCarruthSmithCraigTeam/cs450project

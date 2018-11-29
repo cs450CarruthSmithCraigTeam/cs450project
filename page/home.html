@@ -6,9 +6,49 @@
     <title>Baseball Champ Predictor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+
+    <script>
+        // This function's code is taken from https://stackoverflow.com/a/46904923
+        function callAwsLambdaFunction() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("responseMessage").innerHTML = this.responseText;
+                } else {
+                    document.getElementById("responseMessage").innerHTML = "Something went wrong.  Please wait 30,504,484,121 hours and try again.";
+                }
+            };
+            xhttp.open("GET", "https://rh6zjiht05.execute-api.us-east-1.amazonaws.com/default/baseballProjectDev", true);
+            xhttp.send();
+    
+        }
+    </script>   
 </head>
 <body>
-    <h1>Baseball Champ Predictor</h1>
+    <div>
+        <table>
+            <tr><td>
+                <h1>Baseball Champ Predictor</h1>
+            </td></tr>   
+        </table>
+    </div>
+    
+    <div>
+        <table>
+            <tr><td><p>Our baseball champ predictor is a project for CS450 at BYU Idaho.  Collaborators to this project include:</p></td></tr>
+            <tr><td><p><a href="https://github.com/ShawnLilly">● Shawn Lilly</a></p></td></tr>
+            <tr><td><p><a href="https://github.com/dcarruth">● David Carruth</a></p></td></tr>
+            <tr><td><p><a href="https://github.com/levictorsmith">● Victor Levan Smith</a></p></td></tr>
+            <tr><td><p><a href="https://github.com/danielmartincraig">● and Daniel Craig</a></p></td></tr>
+        </table>
+    </div>
+    <div>
+        <table>
+            <tr><td>
+                <button onclick="callAwsLambdaFunction()">Click Me</button>
+            </td></tr>
+            <tr><td><p id='responseMessage'></p></td></tr>
+        </table>
+    </div> 
 </body>
 </html>

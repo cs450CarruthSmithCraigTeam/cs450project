@@ -1,5 +1,6 @@
 #Here is the source file for our project. Do what you want with it and be sure to comment the work you do with your name.
 import math as m
+import json
 
 def main():
     return 0
@@ -45,4 +46,17 @@ class WorldSeries:
         # This is where Shawn will take over to predict the
         ###############################################################
         return 0
-        
+
+########Added by Daniel#############
+def lambda_handler(event, context):
+    """ This is for when the function is run in the cloud, don't worry about it."""
+    return {
+        'statusCode': 200,
+        'headers': { 
+            "Access-Control-Allow-Origin": "*" 
+        },
+        'body': json.dumps('Hello from Lambda!')
+    }
+
+if __name__ == "__main__":
+    main()

@@ -2,6 +2,9 @@
 import math as m
 import json
 
+def main():
+    return 0
+
 class WorldSeries:
     def __init__(self, data = []):
         self.data = data
@@ -53,3 +56,6 @@ def lambda_handler(event, context):
         },
         'body': json.dumps('Hello from Lambda!')
     }
+
+if __name__ == "__main__":
+    main()

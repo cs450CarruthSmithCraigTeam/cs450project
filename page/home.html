@@ -13,9 +13,9 @@
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("myDiv").innerHTML = "The lambda responded with a response code of 200";
+                    document.getElementById("responseMessage").innerHTML = this.responseText;
                 } else {
-                    document.getElementById("myDiv").innerHTML = "The lambda needs more work...";
+                    document.getElementById("responseMessage").innerHTML = "Something went wrong.  Please wait 30,504,484,121 hours and try again.";
                 }
             };
             xhttp.open("GET", "https://rh6zjiht05.execute-api.us-east-1.amazonaws.com/default/baseballProjectDev", true);
@@ -42,7 +42,13 @@
             <tr><td><p><a href="https://github.com/danielmartincraig">● and Daniel Craig</a></p></td></tr>
         </table>
     </div>
-    <button onclick="callAwsLambdaFunction()">Click Me</button>
-    <div id='myDiv'></div>
+    <div>
+        <table>
+            <tr><td>
+                <button onclick="callAwsLambdaFunction()">Click Me</button>
+            </td></tr>
+            <tr><td><p id='responseMessage'></p></td></tr>
+        </table>
+    </div> 
 </body>
 </html>

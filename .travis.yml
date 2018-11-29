@@ -1,6 +1,6 @@
 language: generic
 before_deploy:
-- zip projectSrc.zip src/project.py 
+- zip -j projectSrc.zip src/project.py 
 deploy:
 - provider: s3
   access_key_id: $baseball_project_access_key_id

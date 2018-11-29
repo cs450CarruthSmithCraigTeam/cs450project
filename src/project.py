@@ -1,22 +1,41 @@
 #Here is the source file for our project. Do what you want with it and be sure to comment the work you do with your name.
 import math as m
 import json
+import pandas
 
 def main():
+    myData = WorldSeriesData()
     return 0
 
-class WorldSeries:
-    def __init__(self, data = []):
-        self.data = data
+class WorldSeriesData():
+    def __init__(self):
+        self.filename = "data/stats.data"
+        self.attributeNames = ["year", "teamName", "winPercentage", "runsPerGame", "AVG", "ERA", "WHIP"]
+        self.dataFromFile = pandas.read_csv(self.filename, header=None, names=self.attributeNames)
+        
+        self.yearData = {}
+        for yearNumber in range(1976,2016):
+            self.yearData[yearNumber] = self.dataFromFile.query('year==@yearNumber')
 
-    #Training data is the array of arrays full of stats separated by year    
-    def train(self, trainingData):
+
+class WorldSeriesClassifier():  
+    def __init__(self, trainingData = []):
         self.data = trainingData
 
-    #Targerts is the array of stats for the year we are using to predict the 
-    # next year i.e. stats for 2017 to predict 2018
-    # K is the number of nearest neigbors we are using
+    #Training data is the array of arrays full of stats separated by year    
+    def fit(self, trainingData):
+        return(WorldSeriesModel(trainingData))
+
+
+class WorldSeriesModel():
+    def __init__(self, trainingData):
+        pass
+
+    
     def predict(self, targets, k):
+        """ Targets is the array of stats for the year we are using to predict the next year,
+        i.e. stats for 2017 to predict 2018. K is the number of nearest neigbors we are using """
+
         #####################DAVID'S CODE##############################
         # Column breakdown = year, name, win %, runs/game, AVG, ERA, WHIP
         # Loop through each team in target array

@@ -47,6 +47,7 @@ class WorldSeries:
         ###############################################################
         return 0
 
+########Added by Daniel#############
 def lambda_handler(event, context):
     """ This is for when the function is run in the cloud, don't worry about it."""
     return {

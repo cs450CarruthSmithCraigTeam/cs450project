@@ -48,7 +48,7 @@ class WorldSeries:
         return 0
 
 def lambda_handler(event, context):
-    print("Successfully hit the lambda handler")
+    """ This is for when the function is run in the cloud, don't worry about it."""
     return {
         'statusCode': 200,
         'headers': { 

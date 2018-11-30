@@ -22,7 +22,7 @@ deploy:
   zip: projectSrc.zip
   region: "us-east-1"
   role: "arn:aws:iam::523059797638:role/service-role/baseballProjectDevRole"
-  runtime: "python3.6"
+  runtime: "python2.7"
   module_name: "project"
   handler_name: "lambda_handler"
   on:
@@ -44,7 +44,7 @@ deploy:
   zip: projectSrc.zip
   region: "us-east-1"
   role: "arn:aws:iam::523059797638:role/service-role/baseballProjectRole"
-  runtime: "python3.6"
+  runtime: "python2.7"
   module_name: "project"
   handler_name: "lambda_handler"
   on:

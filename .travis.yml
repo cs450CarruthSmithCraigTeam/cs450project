@@ -1,6 +1,10 @@
 language: generic
 before_deploy:
-- zip -j projectSrc.zip src/project.py 
+- pip install -r src/requirements.txt -t lambda-env
+- cp -r src/project.py lambda-env/
+- cd lambda-env/
+- zip -r ../projectSrc.zip *
+- cd ..
 deploy:
 - provider: s3
   access_key_id: $baseball_project_access_key_id

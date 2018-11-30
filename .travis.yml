@@ -3,7 +3,7 @@ before_deploy:
 - pip install -r src/requirements.txt -t lambda-env
 - cp -r src/project.py lambda-env/
 - mkdir lambda-env/data
-- cp data/stats.data lambda-env/data
+- cp data/stats.data page
 - cd lambda-env/
 - zip -r ../page/projectSrc.zip *
 - cd ..

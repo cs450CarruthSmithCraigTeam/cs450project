@@ -15,7 +15,7 @@
                 if (this.readyState == 4 && this.status == 200) {
                     document.getElementById("responseMessage").innerHTML = this.responseText;
                 } else {
-                    document.getElementById("responseMessage").innerHTML = "Something went wrong.  Please wait 30,504,484,121 hours and try again.";
+                    document.getElementById("responseMessage").innerHTML = "Please wait...  This could take as long as 30 seconds.";
                 }
             };
             xhttp.open("GET", "https://rh6zjiht05.execute-api.us-east-1.amazonaws.com/default/baseballProjectDev", true);

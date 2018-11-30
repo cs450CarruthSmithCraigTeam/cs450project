@@ -1,10 +1,9 @@
 #Here is the source file for our project. Do what you want with it and be sure to comment the work you do with your name.
-import math as m
-import json
-import pandas
 from scipy import mean
 from scipy.stats import zscore
 from scipy.spatial.distance import cdist
+import json
+import pandas
 from numpy import argpartition, add
 
 def main():
@@ -19,7 +18,7 @@ def main():
     # Predict a winner from the current season data
     prediction = model.predict(currentSeasonData)
 
-    print 'We predict that the ' + prediction + ' will win the 2016 World Series'
+    print('We predict that the ' + prediction + ' will win the 2016 World Series')
     return prediction
 
 class SeasonData():

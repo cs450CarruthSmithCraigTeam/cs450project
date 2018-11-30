@@ -19,7 +19,7 @@ def main():
     # Predict a winner from the current season data
     prediction = model.predict(currentSeasonData)
 
-    print('We predict that the ' + prediction + ' will win the 2016 World Series')
+    print 'We predict that the ' + prediction + ' will win the 2016 World Series'
     return prediction
 
 class SeasonData():

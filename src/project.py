@@ -2,79 +2,116 @@
 import math as m
 import json
 import pandas
+from scipy import mean
+from scipy.stats import zscore
+from scipy.spatial.distance import cdist
+from numpy import argpartition, add
 
 def main():
-    myData = WorldSeriesData()
-    return 0
+    seasonDataObject = SeasonData()
 
-class WorldSeriesData():
+    historicalSeasonData = seasonDataObject.getHistoricalSeasonData()
+    currentSeasonData = seasonDataObject.getCurrentSeasonData()
+
+    factory = teamPerformanceModelFactory(historicalSeasonData)
+    model = factory.fit(historicalSeasonData)
+
+    # Predict a winner from the current season data
+    prediction = model.predict(currentSeasonData)
+
+    print('We predict that the ' + prediction + ' will win the 2016 World Series')
+    return prediction
+
+class SeasonData():
     def __init__(self):
         self.filename = "data/stats.data"
         self.attributeNames = ["year", "teamName", "winPercentage", "runsPerGame", "AVG", "ERA", "WHIP"]
-        self.dataFromFile = pandas.read_csv(self.filename, header=None, names=self.attributeNames)
+        dataFromFile = pandas.read_csv(self.filename, header=None, names=self.attributeNames)
+
+        self.scaledDataFromFile = pandas.DataFrame({
+            "year": dataFromFile["year"],
+            "teamName": dataFromFile["teamName"],
+            "winPercentage": dataFromFile["winPercentage"],
+            "runsPerGame": zscore(dataFromFile["runsPerGame"]),
+            "AVG": zscore(dataFromFile["AVG"]),
+            "ERA": zscore(dataFromFile["ERA"]),
+            "WHIP": zscore(dataFromFile["WHIP"])
+        })
+
+    def getCurrentSeasonData(self):
+        return {2016: self.scaledDataFromFile.query('year==2016')}
+
+    def getHistoricalSeasonData(self):
+        return {yearNumber: self.scaledDataFromFile.query('year==@yearNumber') for yearNumber in range(1976, 2016)}
+
+
+class teamPerformanceModelFactory():  
+    def __init__(self, historicalSeasonData):
+        self.historicalSeasonData = historicalSeasonData
+
+    def fit(self, historicalSeasonData):
+        """ historicalSeasonData is the list of DataFrames full of stats separated by year """
+        return(teamPerformanceModel(historicalSeasonData, k=3))
+
+
+class teamPerformanceModel():
+    def __init__(self, historicalSeasonData, k):
+        """ The constructor stores the training data """
+        self.historicalSeasonData = historicalSeasonData
+        self.k = k
+
+    def predict(self, currentSeasonData):
+
+        columnList = ["runsPerGame", "AVG", "ERA", "WHIP"]
+
+        # Create a dict of lists to hold each current team's predicted performances by year
+        currentMLBTeamPredictedPerformancesByYear = {}
+
+        # Populate the dict of predicted performances by comparing each team to every year's league stats.
+        # Store the resulting win average predictions by year
+        for year in range(1976, 2016):
+            distanceMatrix = cdist(currentSeasonData[2016][columnList].values, self.historicalSeasonData[year][columnList].values, metric='euclidean')
+            
+            # Create a dict to represent the set of modern teams' predicted performances in a particular year 
+            teamPerformances = {}
+
+            # Every row in the distanceMatrix represents how close a current team is to each of the historical teams that existed that year 
+            # Use this info to find the indexes of the K nearest neighbors in the list of historical teams that existed that year
+            for i, row in enumerate(distanceMatrix):
+                kNearestNeighborIndices = argpartition(row, -self.k)[-self.k:]
+                kNearestNeighborWinAverages = self.historicalSeasonData[year].iloc[kNearestNeighborIndices]['winPercentage'].mean()
+
+                # Store the team's predicted win percentage against this year's MLB
+                teamName = currentSeasonData[2016].iloc[i]['teamName']
+                teamPerformances[teamName] = kNearestNeighborWinAverages
+
+            # Store this year's calculated team performances
+            currentMLBTeamPredictedPerformancesByYear[year] = teamPerformances
+
+        # Average a team's predicted performances across the years
+        teamNames = currentSeasonData[2016]['teamName'].unique()
+        getAverageTeamPredictedPerformance = lambda teamName: sum([currentMLBTeamPredictedPerformancesByYear[year][teamName] for year in range(1976, 2016)]) / len(teamNames)
+        averagePredictedPerformances = {teamName: getAverageTeamPredictedPerformance(teamName) for teamName in teamNames}
         
-        self.yearData = {}
-        for yearNumber in range(1976,2016):
-            self.yearData[yearNumber] = self.dataFromFile.query('year==@yearNumber')
+        # Sort the teams by their average predicted performance
+        # Predict the team with the highest predicted performance
+        sortedList = sorted(averagePredictedPerformances, key=lambda x: x[1])
 
+        prediction = sortedList[-1]
 
-class WorldSeriesClassifier():  
-    def __init__(self, trainingData = []):
-        self.data = trainingData
-
-    #Training data is the array of arrays full of stats separated by year    
-    def fit(self, trainingData):
-        return(WorldSeriesModel(trainingData))
-
-
-class WorldSeriesModel():
-    def __init__(self, trainingData):
-        pass
-
-    
-    def predict(self, targets, k):
-        """ Targets is the array of stats for the year we are using to predict the next year,
-        i.e. stats for 2017 to predict 2018. K is the number of nearest neigbors we are using """
-
-        #####################DAVID'S CODE##############################
-        # Column breakdown = year, name, win %, runs/game, AVG, ERA, WHIP
-        # Loop through each team in target array
-        # For each team, loop through each year in data array
-        # For each year, loop through each team
-        resultsOfKNN = []
-        for currentTeam in targets:
-            count = 0
-            sumOfWinPercentage = 0.0
-            for year in self.data:
-                temp = k
-                resultsPerTrial = []
-                for pastTeam in year:   
-                    distance1 = (currentTeam[3] - pastTeam[3]) ** 2
-                    distance2 = (currentTeam[4] - pastTeam[4]) ** 2
-                    distance3 = (currentTeam[5] - pastTeam[5]) ** 2
-                    distance4 = (currentTeam[6] - pastTeam[6]) ** 2  
-
-                    resultsPerTrial.append(m.sqrt(distance1 + distance2 + distance3 + distance4))
-                    count += 1
-                while (temp > 0):    
-                    sumOfWinPercentage += year[resultsPerTrial.index(min(resultsPerTrial))][2]
-                    year[resultsPerTrial.index(min(resultsPerTrial))] = m.inf
-                    temp -= 1
-            resultsOfKNN.append(sumOfWinPercentage / count)
-        # At this point, resultsOfKNN should have a result for every team based on the last 40 years.
-        # This is where Shawn will take over to predict the
-        ###############################################################
-        return 0
+        return prediction
 
 ########Added by Daniel#############
 def lambda_handler(event, context):
     """ This is for when the function is run in the cloud, don't worry about it."""
+    prediction = main()
+    
     return {
         'statusCode': 200,
         'headers': { 
             "Access-Control-Allow-Origin": "*" 
         },
-        'body': json.dumps('Hello from Lambda!')
+        'body': json.dumps('We predict that the ' + prediction + ' will win the 2016 World Series')
     }
 
 if __name__ == "__main__":

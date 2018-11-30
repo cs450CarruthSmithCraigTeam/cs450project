@@ -1,15 +1,14 @@
 #Here is the source file for our project. Do what you want with it and be sure to comment the work you do with your name.
-import math as m
 import json
+import os
 import pandas
 from scipy import mean
 from scipy.stats import zscore
 from scipy.spatial.distance import cdist
 from numpy import argpartition, add
-from sys import StringIo
 
 def main():
-    seasonDataObject = SeasonData()
+    seasonDataObject = SeasonData("data/stats.data")
 
     historicalSeasonData = seasonDataObject.getHistoricalSeasonData()
     currentSeasonData = seasonDataObject.getCurrentSeasonData()
@@ -23,37 +22,15 @@ def main():
     print 'We predict that the ' + prediction + ' will win the 2016 World Series'
     return prediction
 
-
-class SeasonDataFromS3():
-    def __init__(self):
-        s3 = boto3.client('s3')
-        data = s3.get_object(Bucket='lilly-carruth-smith-craig-baseball-project-dev', Key='stats.data')
-        contents = data['Body'].read()
-        fileStream = StringIo(contents)
-
-        self.attributeNames = ["year", "teamName", "winPercentage", "runsPerGame", "AVG", "ERA", "WHIP"]
-        dataFromFile = pandas.read_csv(fileStream, header=None, names=self.attributeNames)
-
-        self.scaledDataFromFile = pandas.DataFrame({
-            "year": dataFromFile["year"],
-            "teamName": dataFromFile["teamName"],
-            "winPercentage": dataFromFile["winPercentage"],
-            "runsPerGame": zscore(dataFromFile["runsPerGame"]),
-            "AVG": zscore(dataFromFile["AVG"]),
-            "ERA": zscore(dataFromFile["ERA"]),
-            "WHIP": zscore(dataFromFile["WHIP"])
-        })
-
     def getCurrentSeasonData(self):
         return {2016: self.scaledDataFromFile.query('year==2016')}
 
     def getHistoricalSeasonData(self):
         return {yearNumber: self.scaledDataFromFile.query('year==@yearNumber') for yearNumber in range(1976, 2016)}
 
-
 class SeasonData():
-    def __init__(self):
-        self.filename = "data/stats.data"
+    def __init__(self, filename):
+        self.filename = filename
         self.attributeNames = ["year", "teamName", "winPercentage", "runsPerGame", "AVG", "ERA", "WHIP"]
         dataFromFile = pandas.read_csv(self.filename, header=None, names=self.attributeNames)
 
@@ -133,7 +110,20 @@ class teamPerformanceModel():
 ########Added by Daniel#############
 def lambda_handler(event, context):
     """ This is for when the function is run in the cloud, don't worry about it."""
-    prediction = main()
+    
+    filename = os.environ['LAMBDA_TASK_ROOT'] + "/data/stats.data"
+    seasonDataObject = SeasonData(filename)
+
+    historicalSeasonData = seasonDataObject.getHistoricalSeasonData()
+    currentSeasonData = seasonDataObject.getCurrentSeasonData()
+
+    factory = teamPerformanceModelFactory(historicalSeasonData)
+    model = factory.fit(historicalSeasonData)
+
+    # Predict a winner from the current season data
+    prediction = model.predict(currentSeasonData)
+
+    print 'We predict that the ' + prediction + ' will win the 2016 World Series'
     
     return {
         'statusCode': 200,

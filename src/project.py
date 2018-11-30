@@ -24,7 +24,7 @@ def main():
 
 class SeasonData():
     def __init__(self):
-        self.filename = "data/stats.data"
+        self.filename = "/tmp/data/stats.data"
         self.attributeNames = ["year", "teamName", "winPercentage", "runsPerGame", "AVG", "ERA", "WHIP"]
         dataFromFile = pandas.read_csv(self.filename, header=None, names=self.attributeNames)
 

@@ -2,8 +2,10 @@ language: generic
 before_deploy:
 - pip install -r src/requirements.txt -t lambda-env
 - cp -r src/project.py lambda-env/
+- mkdir lambda-env/data
+- cp data/stats.data lambda-env/data
 - cd lambda-env/
-- zip -r ../projectSrc.zip *
+- zip -r ../page/projectSrc.zip *
 - cd ..
 deploy:
 - provider: s3
@@ -12,19 +14,7 @@ deploy:
   bucket: lilly-carruth-smith-craig-baseball-project-dev
   local-dir: page
   region: us-east-1
-  on:
-    branch: dev
-    repo: cs450LillyCarruthSmithCraigTeam/cs450project
-- provider: lambda
-  access_key_id: $baseball_project_access_key_id
-  secret_access_key: $baseball_project_secret_key
-  function_name: "baseballProjectDev"
-  zip: projectSrc.zip
-  region: "us-east-1"
-  role: "arn:aws:iam::523059797638:role/service-role/baseballProjectDevRole"
-  runtime: "python2.7"
-  module_name: "project"
-  handler_name: "lambda_handler"
+  skip-cleanup: true
   on:
     branch: dev
     repo: cs450LillyCarruthSmithCraigTeam/cs450project
@@ -34,19 +24,7 @@ deploy:
   bucket: lilly-carruth-smith-craig-baseball-project
   local-dir: page
   region: us-east-1
-  on:
-    branch: master
-    repo: cs450LillyCarruthSmithCraigTeam/cs450project
-- provider: lambda
-  access_key_id: $baseball_project_access_key_id
-  secret_access_key: $baseball_project_secret_key
-  function_name: "baseballProject"
-  zip: projectSrc.zip
-  region: "us-east-1"
-  role: "arn:aws:iam::523059797638:role/service-role/baseballProjectRole"
-  runtime: "python2.7"
-  module_name: "project"
-  handler_name: "lambda_handler"
+  skip-cleanup: true
   on:
     branch: master
     repo: cs450LillyCarruthSmithCraigTeam/cs450project

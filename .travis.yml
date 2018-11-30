@@ -1,6 +1,6 @@
 language: generic
 before_deploy:
-- pip install -r src/requirements.txt -t lambda-env
+- python2 -m pip install -r src/requirements.txt -t lambda-env
 - cp -r src/project.py lambda-env/
 - cd lambda-env/
 - zip -r ../projectSrc.zip *

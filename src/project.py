@@ -20,13 +20,7 @@ def main():
     prediction = model.predict(currentSeasonData)
 
     print 'We predict that the ' + prediction + ' will win the 2016 World Series'
-    return prediction
 
-    def getCurrentSeasonData(self):
-        return {2016: self.scaledDataFromFile.query('year==2016')}
-
-    def getHistoricalSeasonData(self):
-        return {yearNumber: self.scaledDataFromFile.query('year==@yearNumber') for yearNumber in range(1976, 2016)}
 
 class SeasonData():
     def __init__(self, filename):
@@ -69,6 +63,7 @@ class teamPerformanceModel():
     def predict(self, currentSeasonData):
 
         columnList = ["runsPerGame", "AVG", "ERA", "WHIP"]
+        teamNames = currentSeasonData[2016]['teamName'].unique()
 
         # Create a dict of lists to hold each current team's predicted performances by year
         currentMLBTeamPredictedPerformancesByYear = {}
@@ -76,6 +71,7 @@ class teamPerformanceModel():
         # Populate the dict of predicted performances by comparing each team to every year's league stats.
         # Store the resulting win average predictions by year
         for year in range(1976, 2016):
+            numberOfHistoricalTeams = len(self.historicalSeasonData[year]['teamName'].unique())
             distanceMatrix = cdist(currentSeasonData[2016][columnList].values, self.historicalSeasonData[year][columnList].values, metric='euclidean')
             
             # Create a dict to represent the set of modern teams' predicted performances in a particular year 
@@ -84,7 +80,7 @@ class teamPerformanceModel():
             # Every row in the distanceMatrix represents how close a current team is to each of the historical teams that existed that year 
             # Use this info to find the indexes of the K nearest neighbors in the list of historical teams that existed that year
             for i, row in enumerate(distanceMatrix):
-                kNearestNeighborIndices = argpartition(row, -self.k)[-self.k:]
+                kNearestNeighborIndices = argpartition(row, self.k)[:self.k]
                 kNearestNeighborWinAverages = self.historicalSeasonData[year].iloc[kNearestNeighborIndices]['winPercentage'].mean()
 
                 # Store the team's predicted win percentage against this year's MLB
@@ -95,19 +91,18 @@ class teamPerformanceModel():
             currentMLBTeamPredictedPerformancesByYear[year] = teamPerformances
 
         # Average a team's predicted performances across the years
-        teamNames = currentSeasonData[2016]['teamName'].unique()
         getAverageTeamPredictedPerformance = lambda teamName: sum([currentMLBTeamPredictedPerformancesByYear[year][teamName] for year in range(1976, 2016)]) / len(teamNames)
         averagePredictedPerformances = {teamName: getAverageTeamPredictedPerformance(teamName) for teamName in teamNames}
         
         # Sort the teams by their average predicted performance
         # Predict the team with the highest predicted performance
-        sortedList = sorted(averagePredictedPerformances, key=lambda x: x[1])
+        sortedList = sorted(averagePredictedPerformances.items(), key=lambda x: x[1])
 
-        prediction = sortedList[-1]
+        prediction = sortedList[-1][0]
 
         return prediction
 
-########Added by Daniel#############
+
 def lambda_handler(event, context):
     """ This is for when the function is run in the cloud, don't worry about it."""
     
